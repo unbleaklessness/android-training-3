@@ -3,10 +3,10 @@ package com.sorokinoleg.forecast
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
-
     private val fragmentContainer = R.id.container
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,7 +18,11 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.setOnNavigationItemSelectedListener OnNavigationItemSelectedListener@{
             when (it.itemId) {
                 R.id.navigationToday -> {
-                    showFragment(TodayFragment())
+                    val today = TodayFragment()
+                    today.arguments = Bundle().apply {
+                        putString("city", currentCity.text.toString())
+                    }
+                    showFragment(today)
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.navigationWeek -> {
@@ -35,7 +39,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         swipeRefresh.setOnRefreshListener {
-            showFragment(TodayFragment())
+            val today = TodayFragment()
+            today.arguments = Bundle().apply {
+                putString("city", currentCity.text.toString())
+            }
+            showFragment(today)
             swipeRefresh.isRefreshing = false
         }
     }
@@ -45,5 +53,9 @@ class MainActivity : AppCompatActivity() {
         transaction.replace(fragmentContainer, fragment)
         transaction.addToBackStack(null)
         transaction.commit()
+    }
+
+    public fun updateCity(city: String) {
+        currentCity.text = city
     }
 }

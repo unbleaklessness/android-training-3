@@ -17,23 +17,44 @@ import org.json.JSONObject
 
 class TodayFragment : Fragment() {
 
-    private val weatherUrl = "https://api.darksky.net/forecast/9bbf096599dd872442195480bb377f4c/45.0393,38.9872"
+    private var latitude = 45.0448418
+        set(value) {
+            field = value
+            refreshData()
+        }
+    private var longitude = 38.9760284
+        set(value) {
+            field = value
+            refreshData()
+        }
+
+    private val weatherUrl = "https://api.darksky.net/forecast/9bbf096599dd872442195480bb377f4c/"
     private val imageUrl = "https://via.placeholder.com/300"
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+//        Toast.makeText(context, savedInstanceState?.getString("city"), Toast.LENGTH_LONG).show()
+
+        return inflater.inflate(R.layout.today_fragment, container, false)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        refreshData()
-    }
+        val latlon = savedInstanceState?.getString("city")?.split(", ")
+        latitude = latlon?.get(0)?.toDouble() ?: latitude
+        longitude = latlon?.get(0)?.toDouble() ?: longitude
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.today_fragment, container, false)
+        Toast.makeText(context, savedInstanceState?.getString("city"), Toast.LENGTH_LONG).show()
+
+        refreshData()
     }
 
     private fun refreshData() {
         val queue = Volley.newRequestQueue(context)
 
-        val weatherRequest = JsonObjectRequest(Request.Method.GET, weatherUrl, null,
+        val newWeatherUrl = "$weatherUrl$latitude,$longitude"
+
+        val weatherRequest = JsonObjectRequest(Request.Method.GET, newWeatherUrl, null,
             Response.Listener { handleWeatherData(it) },
             Response.ErrorListener {
                 Toast.makeText(context, "Could not load weather data!", Toast.LENGTH_LONG).show()
