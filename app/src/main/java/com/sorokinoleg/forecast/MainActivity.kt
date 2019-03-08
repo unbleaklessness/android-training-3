@@ -33,6 +33,11 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
+
+        swipeRefresh.setOnRefreshListener {
+            showFragment(TodayFragment())
+            swipeRefresh.isRefreshing = false
+        }
     }
 
     private fun showFragment(fragment: Fragment) {

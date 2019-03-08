@@ -6,13 +6,14 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.ImageRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.today_fragment.*
-import kotlin.math.round
+import org.json.JSONObject
 
 class TodayFragment : Fragment() {
 
@@ -22,39 +23,47 @@ class TodayFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val queue = Volley.newRequestQueue(context)
-
-        val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, weatherUrl, null,
-            Response.Listener {
-                val currently = it.getJSONObject("currently")
-
-                setSummary(currently.get("summary").toString())
-                setTemperature(currently.get("temperature").toString())
-                setHumidity(currently.get("humidity").toString())
-                setPressure(currently.get("pressure").toString())
-
-                setHourly(it.getJSONObject("hourly").get("summary").toString())
-                setDaily(it.getJSONObject("daily").get("summary").toString())
-            },
-            Response.ErrorListener {
-                todayFragmentSummary.text = it.toString()
-            })
-
-        val imageRequest = ImageRequest(imageUrl,
-            Response.Listener {
-                todayFragmentImage.setImageBitmap(it)
-            }, 0, 0, null, Bitmap.Config.RGB_565,
-            Response.ErrorListener {
-                todayFragmentImage.setImageResource(R.drawable.ic_error_black_24dp)
-            })
-
-        queue.add(jsonObjectRequest)
-        queue.add(imageRequest)
-
+        refreshData()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.today_fragment, container, false)
+    }
+
+    private fun refreshData() {
+        val queue = Volley.newRequestQueue(context)
+
+        val weatherRequest = JsonObjectRequest(Request.Method.GET, weatherUrl, null,
+            Response.Listener { handleWeatherData(it) },
+            Response.ErrorListener {
+                Toast.makeText(context, "Could not load weather data!", Toast.LENGTH_LONG).show()
+            })
+
+        queue.add(weatherRequest)
+
+        val weatherIconRequest = ImageRequest(imageUrl,
+            Response.Listener {
+                todayFragmentImage.setImageBitmap(it)
+            }, 0, 0, null, Bitmap.Config.RGB_565,
+            Response.ErrorListener {
+                Toast.makeText(context, "Could not load weather image!", Toast.LENGTH_LONG).show()
+            })
+
+        queue.add(weatherIconRequest)
+    }
+
+    private fun handleWeatherData(data: JSONObject) {
+        val currently = data.getJSONObject("currently")
+        val hourly = data.getJSONObject("hourly")
+        val daily = data.getJSONObject("daily")
+
+        setSummary(currently.get("summary").toString())
+        setTemperature(currently.get("temperature").toString())
+        setHumidity(currently.get("humidity").toString())
+        setPressure(currently.get("pressure").toString())
+
+        setHourly(hourly.get("summary").toString())
+        setDaily(daily.get("summary").toString())
     }
 
     private fun setTemperature(temperature: String) {
