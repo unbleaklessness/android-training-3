@@ -14,24 +14,27 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:menu="@menu/bottom_navigation"
-            app:itemBackground="@color/colorPrimaryDark"
-            android:id="@+id/bottomNavigationView"/>
+            app:itemBackground="@color/colorPrimary"
+            android:id="@+id/bottomNavigationView"
+            app:itemIconTint="@color/onPrimary"
+            app:itemTextColor="@color/onPrimary"/>
 
     <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="0dp"
             android:layout_height="65dp"
             android:gravity="center"
-            android:background="@color/colorPrimaryDark"
+            android:background="@color/colorPrimary"
             android:id="@+id/toolbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
+
         <TextView
                 android:text="FORECAST"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="24sp"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/onPrimary"
                 android:paddingLeft="25dp"
                 android:paddingRight="25dp"
                 tools:layout_editor_absoluteY="163dp"
@@ -41,12 +44,13 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"/>
+
         <TextView
                 android:text="Moscow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/onPrimary"
                 android:paddingLeft="25dp"
                 android:paddingRight="25dp"
                 tools:layout_editor_absoluteY="163dp"
