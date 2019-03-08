@@ -1,5 +1,6 @@
 package com.sorokinoleg.forecast
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -31,6 +32,9 @@ class TodayFragment : Fragment() {
                 setTemperature(currently.get("temperature").toString())
                 setHumidity(currently.get("humidity").toString())
                 setPressure(currently.get("pressure").toString())
+
+                setHourly(it.getJSONObject("hourly").get("summary").toString())
+                setDaily(it.getJSONObject("daily").get("summary").toString())
             },
             Response.ErrorListener {
                 todayFragmentSummary.text = it.toString()
@@ -39,7 +43,7 @@ class TodayFragment : Fragment() {
         val imageRequest = ImageRequest(imageUrl,
             Response.Listener {
                 todayFragmentImage.setImageBitmap(it)
-            }, 0, 0, null,
+            }, 0, 0, null, Bitmap.Config.RGB_565,
             Response.ErrorListener {
                 todayFragmentImage.setImageResource(R.drawable.ic_error_black_24dp)
             })
@@ -54,7 +58,7 @@ class TodayFragment : Fragment() {
     }
 
     private fun setTemperature(temperature: String) {
-        todayFragmentTemperature.text = "Temperature: ${temperature} °F"
+        todayFragmentTemperature.text = "Temperature: ${temperature}°F"
     }
 
     private fun setHumidity(humidity: String) {
@@ -67,5 +71,13 @@ class TodayFragment : Fragment() {
 
     private fun setPressure(pressure: String) {
         todayFragmenPressure.text = "Pressure: ${pressure}"
+    }
+
+    private fun setHourly(hourly: String) {
+        todayFragmentHourly.text = hourly
+    }
+
+    private fun setDaily(daily: String) {
+        todayFragmentDaily.text = daily
     }
 }
